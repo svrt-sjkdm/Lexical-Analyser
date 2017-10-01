@@ -1,0 +1,29 @@
+#include <stdio.h>
+#define a 10 
+// Funcion principal
+int main() {
+	
+	int a=123, c = .23;
+	float b = 0.123;	
+	int A[10];
+	if(a == b && b == a)
+
+	/* Co 
+	   men
+	   tario
+	*/
+
+	printf("Compiladores...\n");
+	printf("KKK)
+	return 0;
+}
+
+int map() {
+	// Comentario 
+	return a*2;
+}
+| & 
+^
+/* DED
+
+int
