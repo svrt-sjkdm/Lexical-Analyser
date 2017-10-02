@@ -10,20 +10,24 @@ class Token(object):
 
 '''
 Lexeme -> Lexema a convertir en token
-Class -> Clase a la que pertenece el lexema
+Class ->  Clase a la que pertenece el lexema
 '''
 def createToken(Lexeme, Class):
-	if Class == 0 or Class == 1 or Class == 7:                 # Lexemas que se introducen en la tabla de simbolos
-		if Lexeme in symbolTable:					           # Si el lexema se encuentra en la tabla de simbolos
-			token = Token(Class, symbolTable.index(Lexeme))    # Solo introducirlo en la tabla de tokens
+	if Class == 0 or Class == 1 or Class == 7:                     # Lexemas que se introducen en la tabla de simbolos
+		if Lexeme in symbolTable:					               # Si el lexema se encuentra en la tabla de simbolos
+			token = Token(Class, symbolTable.index(Lexeme))        # Solo introducirlo en la tabla de tokens
 			tokens.append(token)
-		else:										           # Si no se encuentra en la tabla de simbolos
-			token = Token(Class, len(symbolTable))             # Crear el token
-			tokens.append(token)							   # Insertarlo en la tabla de tokens
-			symbolTable.append(Lexeme)                         # Introducirlo en la tabla de simbolos
-	else:											           # Lexemas que no se introducen en la tabla de simbolos
-		token = Token(Class, Lexeme)                           # Creacion del token
-		tokens.append(token)						           # Agregarlo a la tabla de tokens
+			tokensFile.write('%s %s\n' % (token.name, token.value))# Escribir token en archivo
+		else:										               # Si no se encuentra en la tabla de simbolos
+			token = Token(Class, len(symbolTable))                 # Crear el token
+			tokens.append(token)							       # Insertarlo en la tabla de tokens
+			symbolTable.append(Lexeme)                             # Introducirlo en la tabla de simbolos
+			symbolFile.write('%s %s\n' % (token.value, Lexeme))     
+			tokensFile.write('%s %s\n' % (token.name, token.value))
+	else:											               # Lexemas que no se introducen en la tabla de simbolos
+		token = Token(Class, Lexeme)                               # Creacion del token
+		tokens.append(token)						               # Agregarlo a la tabla de tokens
+		tokensFile.write('%s %s\n' % (token.name, token.value))         
 
 reservedWords = ["auto", "const", "int", "short", "struct", "unsigned", "double", "float",
 				 "break", "continue", "long", "signed", "switch", "void", "else", "for",
@@ -61,7 +65,7 @@ while char:
 		char = file.read(1)
 		while char != '"':                  # Mientras no sea la comilla que cierra
 			if re.match('\n|;', char):      # Si encuentra salto de linea, se produce un error
-				print("\nError en linea %s: Necesitas cerrar la cadena" % str(lines+1))
+				print("\nError en linea %s: Necesitas cerrar la cadena." % str(lines+1))
 				break
 			else:
 				tmp += char
@@ -97,7 +101,7 @@ while char:
 				words.append(tmp)
 				createToken(tmp, 5)         # Crear token
 			else:
-				print("\nError en linea %s : Operador no valido" % str(lines+1))
+				print("\nError en linea %s : Operador no valido." % str(lines+1))
 				file.seek(last_position)
 		elif char == '|':
 			last_position = file.tell()
@@ -107,7 +111,7 @@ while char:
 				words.append(tmp)
 				createToken(tmp, 5)         # Crear token
 			else:
-				print("\nError en linea %s : Operador no valido" % str(lines+1))
+				print("\nError en linea %s : Operador no valido." % str(lines+1))
 				file.seek(last_position)
 		else:
 			words.append(tmp)
@@ -133,7 +137,7 @@ while char:
 				elif char == '\n':
 					lines += 1
 			if char == '':                  # Si no lo encuentra, se produce un error
-				print('\nERROR LINEA %s: No cerraste el comentario multi-linea' % str(error_line))
+				print('\nError en la linea %s: No cerraste el comentario multi-linea.' % str(error_line))
 		else:                               # Encuentra al caracter '/' el cual es un operador aritmetico
 			words.append('/')
 			createToken(tmp, 4)             # Crear token
@@ -184,7 +188,7 @@ while char:
 				break
 			char = file.read(1)
 	else:
-		print('\nError en linea %s: Operador no valido' % str(lines+1))
+		print('\nError en linea %s: Operador no valido.' % str(lines+1))
 
 	tmp = ""
 	char = file.read(1)
@@ -197,29 +201,6 @@ else:
 	lines += 1
 	print('\nINFORMACION DEL PROGRAMA:')
 	print("\nNumero de lineas -> %s\n" % lines)
-	print('----------Lexemes----------')
-	for word in words:
-		if word in reservedWords:
-			print("Reserved Word : ", word)
-		elif word in artihmeticOp:
-			print("Arithmetic Operator : ", word)
-		elif word in logicOp:
-			print("Logic Operator : ", word)
-		elif word in relationOp:
-			print("Relational operator : ", word)
-		elif re.match(identifier, word):
-			print("Identifier : ", word)
-		elif re.match(specialSymbol, word):
-			print("Special Symbol : ", word)
-		elif re.match('(\+|-)?(0?\.[0-9]*|[1-9][0-9]*\.[0-9]*)', word):
-			print("Float number : ", word)
-		elif re.match('((\+|-)?[1-9][0-9]*|0)', word):
-			print("Integer number : ", word)
-		elif re.match('\".*\"', word):
-			print("String : ", word)
-		else:
-			print("No match found...")
-	print('---------------------------')
 
 	print('--------Symbol Table-------')
 	for index,lexeme in enumerate(symbolTable):
